@@ -1,24 +1,33 @@
+// Updated app.js with MongoDB Atlas, dotenv, error handling, and structure cleanup
+
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
-const session = require('express-session'); // Session middleware
-const Customer = require('./models/Customer');
+const session = require('express-session');
+const dotenv = require('dotenv');
+const Customer = require('./models/customer');
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/tailor', {
+// MongoDB Atlas connection
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
+.then(() => console.log('✅ MongoDB connected'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// Set up session middleware
+// Session middleware
 app.use(session({
-  secret: 'yourSecretKey123', // Replace with a strong secret
+  secret: 'yourSecretKey123',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // true if using HTTPS
+  cookie: { secure: false } // Set to true if using HTTPS
 }));
 
 // Middleware
@@ -26,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
-let tempData = {}; // Temporary data storage
+let tempData = {}; // Temporary storage between form steps
 
 // Routes
 
@@ -35,7 +44,7 @@ app.get('/', (req, res) => res.redirect('/login'));
 app.get('/login', (req, res) => res.render('login'));
 app.post('/login', (req, res) => res.redirect('/customer'));
 
-// Customer Form
+// Customer Info
 app.get('/customer', (req, res) => res.render('customer'));
 app.post('/customer', (req, res) => {
   tempData = { ...tempData, ...req.body };
@@ -91,10 +100,15 @@ app.post('/measurements', (req, res) => {
 // Payment
 app.get('/payment', (req, res) => res.render('payment'));
 app.post('/payment', async (req, res) => {
-  tempData.payment = req.body;
-  const customer = new Customer(tempData);
-  await customer.save();
-  res.redirect('/order');
+  try {
+    tempData.payment = req.body;
+    const customer = new Customer(tempData);
+    await customer.save();
+    res.redirect('/order');
+  } catch (err) {
+    console.error('Error saving customer:', err);
+    res.status(500).send('Server Error');
+  }
 });
 
 // Order Confirmation
@@ -103,13 +117,13 @@ app.get('/order', async (req, res) => {
   res.render('order', { customer: lastCustomer });
 });
 
-// View All Customers
+// All Customers
 app.get('/customers', async (req, res) => {
   const customers = await Customer.find();
   res.render('customers', { customers });
 });
 
-// Individual Customer View
+// Individual Customer
 app.get('/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id);
@@ -125,12 +139,7 @@ app.get('/dashboard', async (req, res) => {
   const totalCustomers = await Customer.countDocuments();
   const totalOrders = totalCustomers;
   const totalAppointments = 0; // Placeholder
-
-  res.render('dashboard', {
-    totalCustomers,
-    totalOrders,
-    totalAppointments
-  });
+  res.render('dashboard', { totalCustomers, totalOrders, totalAppointments });
 });
 
 // Logout
@@ -149,4 +158,4 @@ app.get('/logout', (req, res) => {
 app.use('/styles', express.static(path.join(__dirname, 'public')));
 
 // Start Server
-app.listen(3000, () => console.log("Server running at http://localhost:3000"));
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
