@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('/images/fabric3.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(8px); /* 👈 key for glass effect */
+      -webkit-backdrop-filter: blur(8px); /* Safari support */
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+    .card {
+      background: rgba(14, 11, 11, 0.95);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      backdrop-filter: blur(5px);
+    }
+    .form-label {
+      font-weight: 500;
+      color: white;
+    }
+    .btn-pay {
+      border-radius: 30px;
+      font-weight: 500;
+    }
+    h3 {
+      font-weight: 600;
+      color: #efe7e7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h3 class="text-center mb-4">Payment Details</h3>
+    <form method="POST" action="/payment">
+      <div class="mb-3">
+        <label class="form-label">Amount (₹)</label>
+        <input type="number" name="amount" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Payment Method</label>
+        <select name="method" class="form-select" required>
+          <option value="">-- Select Method --</option>
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Card">Card</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Delivery Date</label>
+        <input type="date" name="deliveryDate" class="form-control" required />
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-success btn-pay">Place Order</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

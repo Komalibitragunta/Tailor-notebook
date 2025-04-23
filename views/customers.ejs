@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Customers | Tailor Notebook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('/images/fabric2.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 1rem;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 1100px;
+      backdrop-filter: blur(5px);
+    }
+
+    h3 {
+      font-weight: 600;
+    }
+
+    .table thead {
+      background-color: #343a40;
+      color: #fff;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .btn i {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h3 class="text-center mb-4">All Customers</h3>
+
+    <% if (customers.length === 0) { %>
+      <div class="alert alert-warning text-center">No customer data available.</div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Dress Type</th>
+              <th>Delivery Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% customers.forEach(c => { %>
+              <tr>
+                <td><%= c.name %></td>
+                <td><%= c.phone %></td>
+                <td><%= c.dressType || 'N/A' %></td>
+                <td><%= c.payment?.deliveryDate || 'N/A' %></td>
+                <td>
+                  <a href="/customers/<%= c._id %>" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye-fill"></i> View
+                  </a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <div class="text-center mt-4">
+      <a href="/customer" class="btn btn-success">
+        <i class="bi bi-plus-circle-fill"></i> Add New Customer
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>
