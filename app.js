@@ -6,7 +6,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const dotenv = require('dotenv');
-const customer = require('./models/customer');
+const Customer = require('./models/customer');
 
 // Load environment variables
 dotenv.config();
@@ -107,7 +107,7 @@ app.post('/payment', async (req, res) => {
     res.redirect('/order');
   } catch (err) {
     console.error('Error saving customer:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send("Payment failed.check logs");
   }
 });
 
