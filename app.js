@@ -6,7 +6,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const dotenv = require('dotenv');
-const Customer = require('./models/customer');
+const customer = require('./models/customer');
 
 // Load environment variables
 dotenv.config();
